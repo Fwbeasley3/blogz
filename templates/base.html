@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Build A Blog</title>
+</head>
+
+<body>
+    <nav><a href='/blog'>Main Blog</a> <a href='/newpost'>Add a Blog</a></nav>
+    {% block content %}
+    {% endblock %}
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+
+</body>
+
+</html>
+
+
+    
+    
+
+     
+            
+        
+
