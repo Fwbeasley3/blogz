@@ -2,13 +2,34 @@
 <html>
 
 <head>
-    <title>Build A Blog</title>
+    <title>Blogz</title>
 </head>
 
 <body>
-    <nav><a href='/blog'>Main Blog</a> <a href='/newpost'>Add a Blog</a></nav>
-    {% block content %}
-    {% endblock %}
+    <div>
+        <h1>Blogz</h1>
+
+    </div>
+        <nav>
+        {% if 'username' in session %}
+        <a href="/">Home</a>
+        <a href="blog">All Posts</a>
+        <a href="newpost">New Post</a>
+
+        <a>
+
+      
+        <a href="/logout">Log out</a>
+        
+        </a>
+        <a href="">{{ session['username'] }}</a>
+        {% else %}
+        <a href="login">Login</a> | <a href="signup">Signup</a> | <a href="/">Home</a>
+        {% endif %}
+        </nav>
+    </div>
+
+    
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -19,6 +40,10 @@
     </ul>
     {% endif %}
     {% endwith %}
+
+    {% block content %}
+    {% endblock %}
+
 
 </body>
 

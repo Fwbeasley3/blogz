@@ -1,11 +1,14 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div>
+<ul>
+    <div>
 
-    <h1>{{title}}</h1>
-    <p>{{body}} </p>
-</div>
-    
+    <h1>{{ blog.title}}</h1>
+    <p>{{blog.body}} </p>
+    <h5> Author: {{ blog.owner.username}}</h5>
+    </div>
+</ul>
+
 
 {% endblock %}
+    
