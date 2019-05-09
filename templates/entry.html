@@ -1,21 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <ul>
-<<<<<<< HEAD
     <div class = "boxed">
         <h1>{{ blog.title }} </h1>
         <hr>
         <p>{{ blog.body }}</p>
         <hr>
         <h6>Authored by: <a href="./blog?user={{blog.owner.id}}">{{blog.owner.username}}</a></h6>
-=======
-    <div>
-        <h1>{{ blog.title}}</h1>
-        <hr>
-        <p>{{blog.body}} </p>
-        <hr>
-        <h5> Author: {{ blog.owner.username}}</h5>
->>>>>>> 9988900933cc9d4f7b0ecf4356c43f66f923178c
     </div>
 </ul>
 
