@@ -153,13 +153,13 @@ def signup():
 def blog():
     user = request.args.get('user')
     blog_id = request.args.get('blog')
+    if(blog_id):
+        blog = Blog.query.filter_by(id=blog_id).one()
+        return render_template("entry.html", blog=blog)
     if(user):
         user = User.query.filter_by(id=request.args.get('user')).one()
         bloglist = Blog.query.filter_by(owner=user).all()
         return render_template("blog.html", bloglist=bloglist)
-    if(blog_id):
-        blog = Blog.query.filter_by(id=blog_id).one()
-        return render_template("entry.html", blog=blog)
     bloglist = Blog.query.filter_by().all()
     return render_template("blog.html", bloglist=bloglist)
     
@@ -185,14 +185,16 @@ def new_post():
         blogpost = Blog(title=title, body=body,owner = owner)
         db.session.add(blogpost)
         db.session.commit()
-        return redirect('/blog?id=' + str(blogpost.id))
+        return redirect('/blog?blog=' + str(blogpost.id))
+        # return render_template('entry.html', blog = blogpost)
     else:
         return render_template('newpost.html')
-
+        
+    
 @app.route('/logout')
 def logout():
     del session['username']
-    return redirect('/')
+    return redirect('/blog')
 
 if  __name__ == "__main__":
     app.run()
