@@ -27,6 +27,8 @@ class Blog(db.Model):
         self.body = body
         self.owner = owner
 
+ 
+
     def get_blogs_by_user(owner):
         return Blog.query.filter_by(owner).all()
 
@@ -51,6 +53,7 @@ class User(db.Model):
     def __init__(self,username,password):
         self.username = username
         self.pw_hash = make_pw_hash(password)
+
 
 def emptyField(str):    #check empty str
     if str !="":
@@ -78,6 +81,7 @@ def valid_username(val):
     else:
         return False
 
+@app.before_request
 def require_login():
     allowed_routes = ['login', 'signup', 'blog', 'index', 'static']
     if request.endpoint not in allowed_routes and 'username' not in session:
@@ -85,8 +89,11 @@ def require_login():
 
 @app.route('/')
 def index():
-    userlist = User.query.filter_by().all()
-    return render_template('index.html', userlist=userlist)
+    if(session['user']):
+        userlist = User.query.filter_by().all()
+        return render_template('index.html', userlist=userlist)
+    else:
+        return redirect('login')
 
 @app.route('/login', methods=['POST', 'GET'])             
 def login():
@@ -101,7 +108,12 @@ def login():
             if user and check_pw_hash(password, user.pw_hash):
                 session['username'] = user.username
                 flash('Welcome back, '+ user.username + '!')
-                return redirect('/newpost')
+                return redirect('/blog')
+            
+        flash("Invalid Login!")      
+        return render_template('login.html')
+
+               
 
 @app.route('/signup', methods=['POST', 'GET'])   
 def signup():
@@ -149,24 +161,29 @@ def signup():
     session['user'] = user.username
     return redirect("/")
     
-@app.route('/blog', methods=['GET'])
+@app.route('/blog', methods = ['GET'])
 def blog():
     user = request.args.get('user')
     blog_id = request.args.get('blog')
+    if(blog_id):
+        blog = Blog.query.filter_by(id=blog_id).one()
+        return render_template("entry.html", blog=blog)
     if(user):
         user = User.query.filter_by(id=request.args.get('user')).one()
         bloglist = Blog.query.filter_by(owner=user).all()
         return render_template("blog.html", bloglist=bloglist)
-    if(blog_id):
-        blog = Blog.query.filter_by(id=blog_id).one()
-        return render_template("entry.html", blog=blog)
     bloglist = Blog.query.filter_by().all()
     return render_template("blog.html", bloglist=bloglist)
+
+   
+    
+  
+
     
 @app.route('/newpost', methods=['GET', 'POST'])
 def new_post():
 
-    owner = User.query.filter_by(username=session['username']).first()          #new addition
+    owner = User.query.filter_by(username=session['username']).first()
 
     if (request.method == 'POST'):
         title = request.form['title']
@@ -185,14 +202,27 @@ def new_post():
         blogpost = Blog(title=title, body=body,owner = owner)
         db.session.add(blogpost)
         db.session.commit()
-        return redirect('/blog?id=' + str(blogpost.id))
+        return redirect('/blog?blog=' + str(blogpost.id))
+        # return render_template('entry.html', blog = blogpost)
     else:
         return render_template('newpost.html')
+    
 
+
+    
+   
+
+   
+
+
+            
+
+        
+        
 @app.route('/logout')
 def logout():
     del session['username']
-    return redirect('/')
+    return redirect('/blog')
 
 if  __name__ == "__main__":
     app.run()

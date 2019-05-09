@@ -9,7 +9,7 @@
                 <h1>{{ blog.title }} </h1>
             </a>
             <p>{{ blog.body }}</p>
-            <h6>Authored by: {{ blog.owner.username }}</h6>
+            <h6>Authored by: <a href="./blog?user={{blog.owner.id}}">{{blog.owner.username}}</a></h6>
         </div>
     </li>
     {% endfor %}
